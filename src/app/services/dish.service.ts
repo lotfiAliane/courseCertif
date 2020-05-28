@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Dish } from '../shared/dish.model';
+import { DISHES } from '../shared/dishes';
 
 @Injectable({
   providedIn: 'root'
@@ -6,4 +8,9 @@ import { Injectable } from '@angular/core';
 export class DishService {
 
   constructor() { }
+
+  getDish():Dish[]{
+
+    return DISHES;
+  }
 }
