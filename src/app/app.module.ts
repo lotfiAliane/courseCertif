@@ -17,6 +17,17 @@ import { FooterComponent } from './footer/footer.component';
 import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
 import { ContactComponent } from './contact/contact.component';
+import { LoginComponent } from './login/login.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormsModule } from '@angular/forms'; 
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ReactiveFormsModule } from '@angular/forms';
+
+
 
 
 @NgModule({
@@ -28,7 +39,8 @@ import { ContactComponent } from './contact/contact.component';
     FooterComponent,
     AboutComponent,
     HomeComponent,
-    ContactComponent
+    ContactComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -39,10 +51,21 @@ import { ContactComponent } from './contact/contact.component';
     MatCardModule,
     MatButtonModule,
     MatListModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatDialogModule,
+    MatFormFieldModule, 
+    MatInputModule,
+    MatCheckboxModule,
+    FormsModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
 
   ],
   providers: [],
+  entryComponents: [
+    LoginComponent
+],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
