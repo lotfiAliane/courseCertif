@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input,Inject } from '@angular/core';
 import { Dish } from '../shared/dish.model';
 import { Params, ActivatedRoute } from '@angular/router';
 import { DishService } from '../services/dish.service';
@@ -20,6 +20,8 @@ export class DishdetailComponent implements OnInit {
     next: string;
     commentForm: FormGroup;
     comment:Comment;
+    dishErrMess:string; 
+    dishCopy:Dish;
     
   formErrors = {
     'author': '',
@@ -36,16 +38,20 @@ export class DishdetailComponent implements OnInit {
     }
     
   };
-    constructor(private fb: FormBuilder,private dishservice: DishService, private route: ActivatedRoute,private location: Location) {
+    constructor(@Inject('BaseURL') public BaseURL, private fb: FormBuilder,private dishservice: DishService, private route: ActivatedRoute,private location: Location) {
 
       this.createForm();
      }
 
   ngOnInit(): void {
 
-    this.dishservice.getDishIds().subscribe(dishes => this.dishIds= dishes);
+    this.dishservice.getDishIds().subscribe(
+      dishes => this.dishIds= dishes
+      );
     this.route.params.pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
-    .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); });
+    .subscribe(
+      dish => { this.dish = dish; this.dishCopy=dish; this.setPrevNext(dish.id); },
+      errmess => this.dishErrMess = <any>errmess);
     //this.dishservice.getDish(id).subscribe(dish => this.dish=dish);
   }
   setPrevNext(dishId: string) {
@@ -98,8 +104,14 @@ export class DishdetailComponent implements OnInit {
     const start = new Date();
     
     this.comment=this.commentForm.value;
+   
     this.comment.date=start.toISOString();
-    this.dish.comments.push(this.comment);
+    //this.dish.comments.push(this.comment);
+    this.dishCopy.comments.push(this.comment);
+    this.dishservice.putDish(this.dishCopy).subscribe(
+      dish=> {this.dishCopy=dish; this.dish=dish;},
+      errMsg=> this.dishErrMess=errMsg
+    );
     this.commentForm.reset({rating:5});
   }
 }
