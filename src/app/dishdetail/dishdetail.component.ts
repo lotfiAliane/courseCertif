@@ -6,14 +6,26 @@ import { Location } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Comment } from '../shared/comment.model';
+import { visibility,expand,flyInOut } from '../animations/app.animation';
+
 
 @Component({
   selector: 'app-dishdetail',
   templateUrl: './dishdetail.component.html',
-  styleUrls: ['./dishdetail.component.scss']
+  styleUrls: ['./dishdetail.component.scss'],
+  host: {
+    '[@flyInOut]': 'true',
+    'style': 'display: block;'
+    },
+  animations: [
+    expand(),
+    visibility(),
+    flyInOut(),
+    
+  ]
 })
 export class DishdetailComponent implements OnInit {
-    
+ 
     dishIds:string[];
     dish: Dish;
     prev: string;
@@ -22,7 +34,7 @@ export class DishdetailComponent implements OnInit {
     comment:Comment;
     dishErrMess:string; 
     dishCopy:Dish;
-    
+    visibility = 'shown';
   formErrors = {
     'author': '',
     'comment': ''

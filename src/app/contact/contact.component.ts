@@ -1,17 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FeedBack, ContactType } from '../shared/feed-back.model';
-
+import { FeedbackService } from '../services/feedback.service';
+import { flyInOut,expand,visibility } from '../animations/app.animation';
 @Component({
   selector: 'app-contact',
   templateUrl: './contact.component.html',
-  styleUrls: ['./contact.component.scss']
+  styleUrls: ['./contact.component.scss'],
+  host: {
+    '[@flyInOut]': 'true',
+    'style': 'display: block;'
+    },
+  animations: [
+    expand(),
+    visibility(),
+    flyInOut(),
+    
+  ]
 })
 export class ContactComponent implements OnInit {
 
   feedbackForm: FormGroup;
   feedback: FeedBack;
   contactType = ContactType;
+  feedbackResult:FeedBack;
 
   formErrors = {
     'firstname': '',
@@ -39,11 +51,12 @@ export class ContactComponent implements OnInit {
       'email': 'Email not in valid format.'
     },
   };
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,private feedbackService:FeedbackService) {
     this.createForm();
   }
 
   ngOnInit(): void {
+    
   }
   createForm() {
     this.feedbackForm = this.fb.group({
@@ -51,8 +64,8 @@ export class ContactComponent implements OnInit {
       lastname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
       telnum: ['', [Validators.required, Validators.pattern]],
       email: ['', [Validators.required, Validators.email]],
-      agree: false,
-      contacttype: 'None',
+      agree: true,
+      contacttype: '',
       message: ''
     });
     this.feedbackForm.valueChanges
@@ -84,10 +97,21 @@ export class ContactComponent implements OnInit {
 
 
   onSubmit() {
+    //if the object feedback is empy i display form else if the the feedback is not empty
+    //but the feedbackResult is empty i display spinner onece i have a result i show result
+    //and make timeOut to delete both result and feedback that make form displayed again 
+    //is use binding with hide in view side to check objects
    
     this.feedback = this.feedbackForm.value;
     console.log(this.feedback);
     this.feedbackForm.reset();
+    this.feedbackService.submitFeedback(this.feedback).subscribe(
+      feedback => {
+        this.feedbackResult=feedback;
+        setTimeout(() => {delete this.feedbackResult; delete this.feedback }, 5000)
+    
+      }
+    );
   }
 
 
